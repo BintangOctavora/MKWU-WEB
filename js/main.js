@@ -1,5 +1,7 @@
 /* Le Cheese — order logic & interactions */
 /* ===== Data — edit prices / toppings here ===== */
+const API_URL = "http://localhost:8000";
+const API_TIMEOUT_MS = 8000;
 const WA_NUMBER = "6285843745652"; // 085843745652 in international format
 const BESTIE = { size: 3, price: 33000 }; // 3 Le Mini Bite = Rp33.000
 const TOPPINGS = [
@@ -191,6 +193,7 @@ function cart() {
         text: `${qty}× ${p.label} ${FLAVORS[p.flavor].name} (${t})`,
         subtotal: qty * p.price,
         qty,
+        topping: t,
         p,
       });
     });
@@ -213,6 +216,8 @@ const nameEl = document.getElementById("nama");
 const msgEl = document.getElementById("form-msg");
 const waBtn = document.getElementById("wa-btn");
 const fab = document.getElementById("cart-fab");
+let sending = false;
+let pendingOrder = null;
 let hasItems = false,
   orderVisible = false;
 function syncFab() {
@@ -284,6 +289,11 @@ function syncWa(c = cart()) {
   const hasName = nameEl.value.trim().length > 0;
   document.getElementById("bubble-name").textContent =
     nameEl.value.trim() || "-";
+  if (sending) {
+    waBtn.setAttribute("aria-disabled", "true");
+    msgEl.textContent = "Membuat pesanan…";
+    return;
+  }
   const ok = hasName && c.lines.length > 0;
   if (ok) {
     waBtn.href = waLink(c);
@@ -318,15 +328,86 @@ nameEl.addEventListener("input", () => syncWa());
 document
   .getElementById("order-form")
   .addEventListener("submit", (e) => e.preventDefault());
-waBtn.addEventListener("click", (e) => {
+waBtn.addEventListener("click", async (e) => {
+  if (sending) {
+    e.preventDefault();
+    return;
+  }
   if (waBtn.getAttribute("aria-disabled") === "true") {
     e.preventDefault();
     if (!nameEl.value.trim()) nameEl.focus();
     return;
   }
-  waBtn.href = waLink(cart());
-  msgEl.textContent =
-    "Membuka WhatsApp… Kalau tidak terbuka, chat manual ke 08894129346.";
+  if (!API_URL) {
+    waBtn.href = waLink(cart());
+    msgEl.textContent =
+      "Membuka WhatsApp… Kalau tidak terbuka, chat manual ke 08894129346.";
+    return;
+  }
+
+  e.preventDefault();
+  const c = cart();
+  const customerName = nameEl.value.trim();
+  const request = {};
+  pendingOrder = request;
+  sending = true;
+  syncWa(c);
+  try {
+    request.controller = new AbortController();
+    request.timeout = setTimeout(
+      () => request.controller.abort(),
+      API_TIMEOUT_MS,
+    );
+    const response = await fetch(API_URL + "/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      signal: request.controller.signal,
+      body: JSON.stringify({
+        customer_name: customerName,
+        items: c.lines.map((l) => ({
+          product_id: l.p.id,
+          topping: l.topping,
+          qty: l.qty,
+        })),
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`POST /orders gagal: HTTP ${response.status}`);
+    }
+    const data = await response.json();
+    if (pendingOrder !== request) return;
+    if (typeof data?.wa_url !== "string" || !data.wa_url.startsWith("https://wa.me/")) {
+      throw new Error("Respons /orders memiliki wa_url tidak valid");
+    }
+    if (data.total !== c.total) {
+      console.warn("Total server berbeda dari tampilan; total server berlaku.", {
+        server: data.total,
+        cart: c.total,
+      });
+    }
+    location.href = data.wa_url;
+  } catch (error) {
+    if (pendingOrder !== request) return;
+    console.warn("Gagal membuat pesanan; membuka WhatsApp cadangan.", error);
+    location.href = waLink(cart());
+  } finally {
+    clearTimeout(request.timeout);
+    if (pendingOrder === request) {
+      pendingOrder = null;
+      sending = false;
+      syncWa();
+    }
+  }
+});
+
+addEventListener("pageshow", () => {
+  if (!API_URL) return;
+  const request = pendingOrder;
+  pendingOrder = null;
+  clearTimeout(request?.timeout);
+  request?.controller?.abort();
+  sending = false;
+  syncWa();
 });
 
 /* ===== Copy phone ===== */

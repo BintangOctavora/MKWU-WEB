@@ -3,7 +3,11 @@
 const API_URL = "http://localhost:8000";
 const API_TIMEOUT_MS = 8000;
 const WA_NUMBER = "6285843745652"; // 085843745652 in international format
-const BESTIE = { size: 3, price: 33000 }; // 3 Le Mini Bite = Rp33.000
+/* Paket Bestie: mix any flavor & topping within the same line */
+const BUNDLES = [
+  { line: "bite", name: "Paket Bestie Bite", size: 3, price: 35000 }, // 3 Le Mini Bite    = Rp35.000
+  { line: "classic", name: "Paket Bestie Classic", size: 2, price: 35000 }, // 2 Le Mini Classic = Rp35.000
+];
 const TOPPINGS = [
   "Tanpa topping",
   "Selai blueberry",
@@ -198,15 +202,18 @@ function cart() {
       });
     });
   });
-  const biteQty = lines
-    .filter((l) => l.p.line === "bite")
-    .reduce((a, l) => a + l.qty, 0);
-  const bitePrice = PRODUCTS.find((p) => p.line === "bite").price;
-  const bundles = Math.floor(biteQty / BESTIE.size);
-  const discount =
-    bundles * Math.max(0, BESTIE.size * bitePrice - BESTIE.price);
+  const deals = BUNDLES.map((b) => {
+    const qty = lines
+      .filter((l) => l.p.line === b.line)
+      .reduce((a, l) => a + l.qty, 0);
+    const unit = PRODUCTS.find((p) => p.line === b.line).price;
+    const count = Math.floor(qty / b.size);
+    const saving = count * Math.max(0, b.size * unit - b.price);
+    return { ...b, qty, count, saving };
+  });
+  const discount = deals.reduce((a, d) => a + d.saving, 0);
   const total = lines.reduce((a, l) => a + l.subtotal, 0) - discount;
-  return { lines, bundles, discount, total, biteQty };
+  return { lines, deals, discount, total };
 }
 
 const listEl = document.getElementById("order-list");
@@ -242,12 +249,14 @@ function update() {
     li.firstChild.textContent = l.text;
     listEl.appendChild(li);
   });
-  if (c.discount > 0) {
-    const li = document.createElement("li");
-    li.className = "disc";
-    li.innerHTML = `<span>Paket Bestie ×${c.bundles}</span><span>−${rupiah(c.discount)}</span>`;
-    listEl.appendChild(li);
-  }
+  c.deals
+    .filter((d) => d.saving > 0)
+    .forEach((d) => {
+      const li = document.createElement("li");
+      li.className = "disc";
+      li.innerHTML = `<span>${d.name} ×${d.count}</span><span>−${rupiah(d.saving)}</span>`;
+      listEl.appendChild(li);
+    });
   listEl.hidden = c.lines.length === 0;
   emptyEl.hidden = c.lines.length > 0;
   document.getElementById("bubble-total").textContent = rupiah(c.total);
@@ -257,18 +266,24 @@ function update() {
     void totalEl.offsetWidth;
     totalEl.classList.add("pop");
   }
-  // Paket Bestie meter
-  const filled = c.biteQty === 0 ? 0 : c.biteQty % 3 || 3;
-  document
-    .querySelectorAll("#bestie-dots span")
-    .forEach((d, i) => d.classList.toggle("on", i < filled));
-  const rem = 3 - (c.biteQty % 3);
-  document.getElementById("bestie-msg").textContent =
-    c.biteQty === 0
-      ? "Tambah 3 Le Mini Bite untuk harga paket."
-      : rem === 3
-        ? `Paket Bestie aktif ×${c.bundles}. Hemat ${rupiah(c.discount)}.`
-        : `Tambah ${rem} Bite lagi untuk ${c.bundles ? "paket berikutnya" : "Paket Bestie"}.`;
+  // Paket Bestie meters (one per line)
+  c.deals.forEach((d) => {
+    const row = document.querySelector(`.meter[data-line="${d.line}"]`);
+    if (!row) return;
+    const short = d.line === "bite" ? "Bite" : "Classic";
+    const filled = d.qty === 0 ? 0 : d.qty % d.size || d.size;
+    row
+      .querySelectorAll(".dots span")
+      .forEach((s, i) => s.classList.toggle("on", i < filled));
+    const rem = d.size - (d.qty % d.size);
+    row.closest(".bestie").classList.toggle("active", d.count > 0);
+    row.querySelector(".bestie-msg").textContent =
+      d.qty === 0
+        ? `Tambah ${d.size} ${short} untuk harga paket.`
+        : rem === d.size
+          ? `Aktif ×${d.count}. Hemat ${rupiah(d.saving)}.`
+          : `Tambah ${rem} ${short} lagi untuk ${d.count ? "paket berikutnya" : "harga paket"}.`;
+  });
   // Floating cart
   const count = c.lines.reduce((a, l) => a + l.qty, 0);
   const fabCount = document.getElementById("fab-count");
@@ -312,8 +327,9 @@ function syncWa(c = cart()) {
 function waLink(c) {
   const nama = nameEl.value.trim();
   const rows = c.lines.map((l) => `- ${l.text}: ${rupiah(l.subtotal)}`);
-  if (c.discount > 0)
-    rows.push(`- Paket Bestie ×${c.bundles}: −${rupiah(c.discount)}`);
+  c.deals
+    .filter((d) => d.saving > 0)
+    .forEach((d) => rows.push(`- ${d.name} ×${d.count}: −${rupiah(d.saving)}`));
   const text = [
     "Halo Le Cheese, saya mau pesan:",
     ...rows,
@@ -341,7 +357,7 @@ waBtn.addEventListener("click", async (e) => {
   if (!API_URL) {
     waBtn.href = waLink(cart());
     msgEl.textContent =
-      "Membuka WhatsApp… Kalau tidak terbuka, chat manual ke 08894129346.";
+      "Membuka WhatsApp… Kalau tidak terbuka, chat manual ke 085843745652.";
     return;
   }
 

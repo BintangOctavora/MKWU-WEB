@@ -10,7 +10,7 @@ lecheese/
 └── img/
     ├── bg-bunga.webp       ← latar hero
     ├── matcha-drip.webp    ← lelehan matcha di atas
-    ├── maskot-kecil.webp   ← logo navbar & avatar chat
+    ├── logo.png   ← logo navbar & avatar chat
     ├── megafon.webp        ← banner Paket Bestie
     ├── foto-hero.jpg       ← (tambahkan) foto polaroid di Beranda
     └── menu/               ← (tambahkan) foto tiap menu

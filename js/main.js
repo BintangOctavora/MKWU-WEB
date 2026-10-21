@@ -8,10 +8,32 @@ const BUNDLES = [
 ];
 /* Toppings per flavor */
 const TOPPINGS = {
-  original: ["Tanpa topping", "Selai blueberry", "Selai strawberry"],
-  matcha: ["Tanpa topping", "Drizzle matcha"],
-  chocolate: ["Tanpa topping", "Drizzle cokelat"],
+  original: [
+    "Tanpa topping",
+    "Selai blueberry",
+    "Selai strawberry",
+    "Drizzle matcha",
+    "Drizzle cokelat",
+    "Salted Caramel",
+  ],
+  matcha: [
+    "Tanpa topping",
+    "Selai blueberry",
+    "Selai strawberry",
+    "Drizzle matcha",
+    "Drizzle cokelat",
+    "Salted Caramel",
+  ],
+  chocolate: [
+    "Tanpa topping",
+    "Selai blueberry",
+    "Selai strawberry",
+    "Drizzle matcha",
+    "Drizzle cokelat",
+    "Salted Caramel",
+  ],
 };
+
 const FLAVORS = {
   original: { name: "Original" },
   chocolate: { name: "Chocolate" },

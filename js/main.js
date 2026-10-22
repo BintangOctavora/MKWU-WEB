@@ -8,13 +8,34 @@ const BUNDLES = [
   { line: "bite", name: "Paket Bestie Bite", size: 3, price: 35000 }, // 3 Le Mini Bite    = Rp35.000
   { line: "classic", name: "Paket Bestie Classic", size: 2, price: 35000 }, // 2 Le Mini Classic = Rp35.000
 ];
-const TOPPINGS = [
-  "Tanpa topping",
-  "Selai blueberry",
-  "Selai stroberi",
-  "Selai cokelat",
-  "Selai karamel",
-];
+/* Toppings per flavor */
+const TOPPINGS = {
+  original: [
+    "Tanpa topping",
+    "Selai blueberry",
+    "Selai strawberry",
+    "Drizzle matcha",
+    "Drizzle cokelat",
+    "Salted Caramel",
+  ],
+  matcha: [
+    "Tanpa topping",
+    "Selai blueberry",
+    "Selai strawberry",
+    "Drizzle matcha",
+    "Drizzle cokelat",
+    "Salted Caramel",
+  ],
+  chocolate: [
+    "Tanpa topping",
+    "Selai blueberry",
+    "Selai strawberry",
+    "Drizzle matcha",
+    "Drizzle cokelat",
+    "Salted Caramel",
+  ],
+};
+
 const FLAVORS = {
   original: { name: "Original" },
   chocolate: { name: "Chocolate" },
@@ -69,7 +90,7 @@ const PRODUCTS = [
 const state = Object.fromEntries(
   PRODUCTS.map((p) => [p.id, { sel: "", counts: {} }]),
 );
-const shortTop = (t) => t.replace(/^Selai /, "");
+const shortTop = (t) => t.replace(/^(Selai|Drizzle) /, "");
 const rupiah = (n) => "Rp. " + n.toLocaleString("id-ID");
 const iconMinus =
   '<svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" stroke="#2B1D20" stroke-width="2.4" stroke-linecap="round"/></svg>';
@@ -99,7 +120,7 @@ PRODUCTS.forEach((p) => {
       <div class="select-wrap">
         <select id="top-${p.id}" class="placeholder">
           <option value="" selected>Pilih topping</option>
-          ${TOPPINGS.map((t) => `<option value="${t}">${t}</option>`).join("")}
+          ${TOPPINGS[p.flavor].map((t) => `<option value="${t}">${t}</option>`).join("")}
         </select>${caret}
       </div>
     </div>
@@ -134,20 +155,22 @@ PRODUCTS.forEach((p) => {
     card.classList.toggle("has-qty", totalQty > 0);
     card.dataset.qty = totalQty;
     chips.innerHTML = "";
-    TOPPINGS.filter((t) => s.counts[t]).forEach((t) => {
-      const li = document.createElement("li");
-      const b = document.createElement("button");
-      b.type = "button";
-      b.textContent = `${shortTop(t)} ×${s.counts[t]}`;
-      b.setAttribute("aria-pressed", String(t === s.sel));
-      b.addEventListener("click", () => {
-        s.sel = t;
-        hint.textContent = "";
-        render();
+    TOPPINGS[p.flavor]
+      .filter((t) => s.counts[t])
+      .forEach((t) => {
+        const li = document.createElement("li");
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = `${shortTop(t)} ×${s.counts[t]}`;
+        b.setAttribute("aria-pressed", String(t === s.sel));
+        b.addEventListener("click", () => {
+          s.sel = t;
+          hint.textContent = "";
+          render();
+        });
+        li.appendChild(b);
+        chips.appendChild(li);
       });
-      li.appendChild(b);
-      chips.appendChild(li);
-    });
   }
 
   sel.addEventListener("change", () => {
@@ -191,13 +214,15 @@ function cart() {
   const lines = [];
   PRODUCTS.forEach((p) => {
     const s = state[p.id];
-    TOPPINGS.filter((t) => s.counts[t]).forEach((t) => {
-      const qty = s.counts[t];
-      lines.push({
-        text: `${qty}× ${p.label} ${FLAVORS[p.flavor].name} (${t})`,
-        subtotal: qty * p.price,
-        qty,
-        topping: t,
+    TOPPINGS[p.flavor]
+      .filter((t) => s.counts[t])
+      .forEach((t) => {
+        const qty = s.counts[t];
+        lines.push({
+          text: `${qty}× ${p.label} ${FLAVORS[p.flavor].name} (${t})`,
+          subtotal: qty * p.price,
+          qty,
+          topping: t,
         p,
       });
     });

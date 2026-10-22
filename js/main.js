@@ -1,6 +1,6 @@
 /* Le Cheese — order logic & interactions */
 /* ===== Data — edit prices / toppings here ===== */
-const API_URL = "http://localhost:8000";
+const API_URL = "http://127.0.0.1:8000";
 const API_TIMEOUT_MS = 8000;
 const WA_NUMBER = "6285843745652"; // 085843745652 in international format
 /* Paket Bestie: mix any flavor & topping within the same line */

@@ -1140,13 +1140,14 @@ img {
 @media (max-width: 640px) {
   .bestie {
     padding-right: 20px;
-    padding-top: 70px;
+    padding-top: 44px;
   }
   .bestie .megafon {
-    top: -30px;
-    right: 8px;
-    transform: rotate(8deg);
-    width: 96px;
+    top: 0;
+    right: 0;
+    transform: translateY(-50%) rotate(8deg);
+    width: 72px;
+    height: auto;
   }
 }
 

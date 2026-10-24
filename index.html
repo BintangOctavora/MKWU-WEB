@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="Le Cheese — basque burnt cheesecake mini di Jember. Pesan langsung lewat WhatsApp."
+    />
+    <title>Le Cheese</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Bagel+Fat+One&family=Bowlby+One&family=Courier+Prime:wght@700&family=Inter:wght@300;400;500;600;700&family=Shrikhand&display=swap"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="nav-pill">
+        <a class="brand" href="#beranda" aria-label="Le Cheese, ke beranda">
+          <span class="brand-mark" aria-hidden="true"
+            ><img src="img/logo.png" alt="" width="52" height="52"
+          /></span>
+          <span class="brand-text">Le Cheese</span>
+        </a>
+        <button
+          class="burger"
+          id="burger"
+          type="button"
+          aria-label="Buka menu"
+          aria-expanded="false"
+          aria-controls="nav-menu"
+        >
+          <span class="burger-box" aria-hidden="true"
+            ><span></span><span></span><span></span
+          ></span>
+        </button>
+        <nav aria-label="Utama" id="nav-menu">
+          <ul class="nav-links">
+            <li><a href="#beranda">Beranda</a></li>
+            <li><a href="#cara-pesan">Cara Pesan</a></li>
+            <li><a href="#menu">Produk</a></li>
+            <li><a href="#kontak">Tentang</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section id="beranda" class="hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <h1>Gosong di luar, <span class="mark">lembut</span> di dalam.</h1>
+            <p class="hero-sub">
+              <span class="tape green" aria-hidden="true"></span>Basque burnt
+              cheesecake mini mulai Rp12.000.<br />Dibuat setelah kamu pesan.
+            </p>
+            <a class="btn-sticker" href="#menu">Lihat menu</a>
+          </div>
+          <figure class="photo">
+            <span class="tape green" aria-hidden="true"></span>
+            <div class="photo-frame">
+              <span>Tempat foto asli Le Cheese</span>
+              <img
+                src="img/foto-hero.jpg"
+                alt="Foto basque burnt cheesecake Le Cheese"
+                data-photo
+              />
+            </div>
+            <figcaption>Le Cheese</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <div class="band" id="cara-pesan">
+        <h2 class="ransom" data-ransom>Cara Pesan</h2>
+      </div>
+
+      <ol class="wrap steps">
+        <li class="step">
+          <span class="tape" aria-hidden="true"></span
+          ><span class="step-num">1</span>
+          <div>
+            <h3>Pilih rasa dan topping</h3>
+            <p>Atur pesananmu di bawah.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="tape green" aria-hidden="true"></span
+          ><span class="step-num">2</span>
+          <div>
+            <h3>Kirim ke Admin</h3>
+            <p>Tombol WhatsApp mengirim pesanan yang sudah terisi.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="tape" aria-hidden="true"></span
+          ><span class="step-num">3</span>
+          <div>
+            <h3>Konfirmasi dan produksi</h3>
+            <p>
+              Admin memberi rincian harga dan jadwal, lalu pesanan langsung
+              dibuat.
+            </p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="band green" id="menu">
+        <h2 class="ransom" data-ransom>Menu</h2>
+      </div>
+
+      <div class="wrap menu">
+        <section aria-labelledby="bite-h">
+          <div class="line-head">
+            <h3 id="bite-h">Le Mini <span>Bite</span></h3>
+            <p>±80 gram, pas untuk camilan sehabis kuliah.</p>
+          </div>
+          <div class="cards" data-line="bite"></div>
+          <div class="bestie">
+            <span class="tape" aria-hidden="true"></span>
+            <p>
+              <strong>Paket Bestie Bite</strong>: 3 Le Mini Bite bebas campur
+              rasa cukup Rp35.000. Dihitung otomatis di keranjang.
+            </p>
+            <div class="meter" data-line="bite">
+              <div class="dots" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <p class="bestie-msg" aria-live="polite">
+                Tambah 3 Bite untuk harga paket.
+              </p>
+            </div>
+            <img
+              class="megafon"
+              src="img/megafon.webp"
+              alt=""
+              width="217"
+              height="196"
+            />
+          </div>
+        </section>
+
+        <section aria-labelledby="classic-h">
+          <div class="line-head">
+            <h3 id="classic-h">Le Mini <span>Classic</span></h3>
+            <p>±150 gram, puas untuk dinikmati sendiri atau dibagi berdua.</p>
+          </div>
+          <div class="cards" data-line="classic"></div>
+          <div class="bestie classic">
+            <span class="tape green" aria-hidden="true"></span>
+            <p>
+              <strong>Paket Bestie Classic</strong>: 2 Le Mini Classic bebas
+              campur rasa cukup Rp35.000. Dihitung otomatis di keranjang.
+            </p>
+            <div class="meter" data-line="classic">
+              <div class="dots" aria-hidden="true">
+                <span></span><span></span>
+              </div>
+              <p class="bestie-msg" aria-live="polite">
+                Tambah 2 Classic untuk harga paket.
+              </p>
+            </div>
+            <img
+              class="megafon"
+              src="img/megafon.webp"
+              alt=""
+              width="217"
+              height="196"
+            />
+          </div>
+        </section>
+
+        <section class="order gingham" aria-labelledby="order-h">
+          <div class="phone" aria-label="Pratinjau pesan WhatsApp ke admin">
+            <div class="screen">
+              <span class="island" aria-hidden="true"></span>
+              <div class="statusbar" aria-hidden="true">
+                <span class="clock">9:41</span
+                ><span class="icons">
+                  <svg width="17" height="11" viewBox="0 0 17 11">
+                    <rect x="0" y="7" width="3" height="4" rx="1" />
+                    <rect x="4.5" y="5" width="3" height="6" rx="1" />
+                    <rect x="9" y="2.5" width="3" height="8.5" rx="1" />
+                    <rect x="13.5" y="0" width="3" height="11" rx="1" />
+                  </svg>
+                  <svg width="24" height="12" viewBox="0 0 24 12">
+                    <rect
+                      x=".5"
+                      y=".5"
+                      width="20"
+                      height="11"
+                      rx="3"
+                      fill="none"
+                      stroke="#111"
+                      opacity=".5"
+                    />
+                    <rect x="2" y="2" width="15" height="8" rx="1.6" />
+                    <rect
+                      x="21.5"
+                      y="4"
+                      width="1.8"
+                      height="4"
+                      rx=".8"
+                      opacity=".5"
+                    />
+                  </svg>
+                </span>
+              </div>
+              <div class="wa-head">
+                <span class="back" aria-hidden="true">&lsaquo; Chats</span>
+                <div class="who">
+                  <img src="img/logo.png" alt="" width="32" height="32" />
+                  <div><b>Admin Le Cheese</b><small>online</small></div>
+                </div>
+                <span class="spacer" aria-hidden="true"></span>
+              </div>
+              <div class="chat">
+                <span class="daychip">Hari ini</span>
+                <p class="bubble in">
+                  Halo! Mau pesan cheesecake apa hari ini?<span class="meta"
+                    ><span class="clock">9:41</span></span
+                  >
+                </p>
+                <div class="bubble out">
+                  <div>Halo Le Cheese, saya mau pesan:</div>
+                  <p class="order-empty" id="order-empty">
+                    Belum ada pesanan. Tambahkan rasa di atas.
+                  </p>
+                  <ul class="order-list" id="order-list" hidden></ul>
+                  <div class="bubble-total">
+                    Total: <span id="bubble-total">Rp. 0</span><br />Nama:
+                    <span id="bubble-name">-</span>
+                  </div>
+                  <span class="meta"
+                    ><span class="clock">9:41</span
+                    ><span class="tick" aria-hidden="true">✓✓</span></span
+                  >
+                </div>
+              </div>
+              <div class="typebar" aria-hidden="true">
+                <span>Ketik pesan</span
+                ><i
+                  ><svg width="16" height="16" viewBox="0 0 24 24">
+                    <path d="M3 20l18-8L3 4v6l12 2-12 2z" fill="#fff" /></svg
+                ></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-side">
+            <span class="tape green" aria-hidden="true"></span>
+            <h3 id="order-h">Pesananmu</h3>
+            <p class="order-note">
+              Pesan di HP ini yang akan terkirim ke admin lewat WhatsApp.
+            </p>
+            <div class="order-total">
+              <span>Total</span
+              ><output id="order-total" aria-live="polite">Rp. 0</output>
+            </div>
+            <form class="order-form" id="order-form" novalidate>
+              <label for="nama">Nama Lengkap</label>
+              <input
+                id="nama"
+                name="nama"
+                type="text"
+                autocomplete="name"
+                placeholder="Contoh: Narendra Wisnu"
+              />
+              <a
+                class="wa-btn"
+                id="wa-btn"
+                href="https://wa.me/6285843745652"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3a.5.5 0 0 0 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z"
+                  />
+                </svg>
+                Pesan Lewat Whatsapp
+              </a>
+              <p class="form-msg" id="form-msg" role="alert"></p>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      <div class="band" id="kontak">
+        <h2 class="ransom" data-ransom>Kontak</h2>
+      </div>
+
+      <section class="wrap contact" aria-label="Kontak Le Cheese">
+        <div class="letter">
+          <span class="tape" aria-hidden="true"></span>
+          <p class="greet">
+            Ada pertanyaan atau mau pesan banyak? Hubungi kami:
+          </p>
+          <div class="contact-row">
+            <svg width="56" height="56" viewBox="0 0 60 60" aria-hidden="true">
+              <circle cx="30" cy="30" r="28" fill="#25D366" />
+              <path
+                fill="#fff"
+                d="M30 14a16 16 0 0 0-13.8 24.2L14 46l8-2.1A16 16 0 1 0 30 14Zm7.2 19.4c-.3-.2-2.3-1.1-2.7-1.3s-.6-.2-.9.2-1 1.3-1.3 1.6-.5.2-.8.1a10.7 10.7 0 0 1-5.3-4.6c-.4-.7.4-.6 1.1-2.1a.8.8 0 0 0 0-.8l-1.3-2.9c-.3-.8-.7-.7-.9-.7h-.8a1.5 1.5 0 0 0-1.1.5 4.8 4.8 0 0 0-1.5 3.6 8.3 8.3 0 0 0 1.8 4.4 19 19 0 0 0 7.2 6.4c2.7 1.2 3.7 1.3 5.1 1.1a4.3 4.3 0 0 0 2.8-2 3.5 3.5 0 0 0 .2-2c-.1-.2-.3-.3-.6-.5Z"
+              />
+            </svg>
+            <span id="phone">085843745652</span>
+            <button class="copy" type="button" data-copy="085843745652">
+              Salin
+            </button>
+          </div>
+          <div class="contact-row">
+            <svg width="54" height="54" viewBox="0 0 55 55" aria-hidden="true">
+              <defs>
+                <linearGradient id="ig" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0" stop-color="#fdb44b" />
+                  <stop offset=".45" stop-color="#f0285a" />
+                  <stop offset="1" stop-color="#8a3ab9" />
+                </linearGradient>
+              </defs>
+              <rect width="55" height="55" rx="14" fill="url(#ig)" />
+              <rect
+                x="12"
+                y="12"
+                width="31"
+                height="31"
+                rx="9"
+                fill="none"
+                stroke="#fff"
+                stroke-width="3.5"
+              />
+              <circle
+                cx="27.5"
+                cy="27.5"
+                r="7.5"
+                fill="none"
+                stroke="#fff"
+                stroke-width="3.5"
+              />
+              <circle cx="37.5" cy="17.5" r="2.3" fill="#fff" />
+            </svg>
+            <a
+              href="https://www.instagram.com/le_.cheese/"
+              target="_blank"
+              rel="noopener"
+              >le_.cheese</a
+            >
+          </div>
+        </div>
+        <div class="envelope" aria-hidden="true">
+          <svg
+            class="amplop mail-art"
+            viewBox="0 0 440 400"
+            width="440"
+            height="400"
+          >
+            <defs>
+              <mask id="perf">
+                <rect x="0" y="0" width="130" height="150" fill="#fff" />
+                <g fill="#000">
+                  <circle cx="0" cy="0" r="5.5" />
+                  <circle cx="14.4" cy="0" r="5.5" />
+                  <circle cx="28.9" cy="0" r="5.5" />
+                  <circle cx="43.3" cy="0" r="5.5" />
+                  <circle cx="57.8" cy="0" r="5.5" />
+                  <circle cx="72.2" cy="0" r="5.5" />
+                  <circle cx="86.7" cy="0" r="5.5" />
+                  <circle cx="101.1" cy="0" r="5.5" />
+                  <circle cx="115.6" cy="0" r="5.5" />
+                  <circle cx="130" cy="0" r="5.5" />
+                  <circle cx="0" cy="150" r="5.5" />
+                  <circle cx="14.4" cy="150" r="5.5" />
+                  <circle cx="28.9" cy="150" r="5.5" />
+                  <circle cx="43.3" cy="150" r="5.5" />
+                  <circle cx="57.8" cy="150" r="5.5" />
+                  <circle cx="72.2" cy="150" r="5.5" />
+                  <circle cx="86.7" cy="150" r="5.5" />
+                  <circle cx="101.1" cy="150" r="5.5" />
+                  <circle cx="115.6" cy="150" r="5.5" />
+                  <circle cx="130" cy="150" r="5.5" />
+                  <circle cx="0" cy="15" r="5.5" />
+                  <circle cx="0" cy="30" r="5.5" />
+                  <circle cx="0" cy="45" r="5.5" />
+                  <circle cx="0" cy="60" r="5.5" />
+                  <circle cx="0" cy="75" r="5.5" />
+                  <circle cx="0" cy="90" r="5.5" />
+                  <circle cx="0" cy="105" r="5.5" />
+                  <circle cx="0" cy="120" r="5.5" />
+                  <circle cx="0" cy="135" r="5.5" />
+                  <circle cx="130" cy="15" r="5.5" />
+                  <circle cx="130" cy="30" r="5.5" />
+                  <circle cx="130" cy="45" r="5.5" />
+                  <circle cx="130" cy="60" r="5.5" />
+                  <circle cx="130" cy="75" r="5.5" />
+                  <circle cx="130" cy="90" r="5.5" />
+                  <circle cx="130" cy="105" r="5.5" />
+                  <circle cx="130" cy="120" r="5.5" />
+                  <circle cx="130" cy="135" r="5.5" />
+                </g>
+              </mask>
+              <path id="pm-ring" d="M0 -39 A39 39 0 1 1 -0.1 -39" />
+            </defs>
+            <!-- envelope -->
+            <g class="env" transform="rotate(-6 210 240)">
+              <rect
+                x="40"
+                y="125"
+                width="340"
+                height="220"
+                rx="10"
+                fill="#F9C4D4"
+              />
+              <path d="M40 125 L210 250 L40 345Z" fill="#F7B9CB" />
+              <path d="M380 125 L210 250 L380 345Z" fill="#F7B9CB" />
+              <path d="M40 345 L210 232 L380 345Z" fill="#F4ADC2" />
+              <path
+                d="M44 127 L210 252 L376 127Z"
+                fill="#FCD6E1"
+                stroke="#fff"
+                stroke-width="2"
+                stroke-opacity=".7"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M70 318 h70 M70 304 h46"
+                stroke="#E88AA5"
+                stroke-width="3"
+                stroke-linecap="round"
+                opacity=".6"
+              />
+              <g transform="translate(210 250)">
+                <circle r="27" fill="#E8467C" />
+                <circle
+                  r="20"
+                  fill="none"
+                  stroke="#C93468"
+                  stroke-width="2.5"
+                />
+                <path
+                  d="M0 9 C-14 0 -12 -10 -6 -11 C-3 -11.5 -1 -10 0 -7 C1 -10 3 -11.5 6 -11 C12 -10 14 0 0 9Z"
+                  fill="#FFE3EC"
+                />
+              </g>
+            </g>
+            <!-- washi tape on the corner -->
+            <rect
+              x="18"
+              y="132"
+              width="92"
+              height="26"
+              transform="rotate(-38 64 145)"
+              fill="#C9D2A0"
+              opacity=".85"
+            />
+            <!-- postage stamp -->
+            <g transform="translate(262 36) rotate(9 65 75)">
+              <g class="stamp">
+                <rect width="130" height="150" fill="#fff" mask="url(#perf)" />
+                <rect x="12" y="12" width="106" height="126" fill="#C9D2A0" />
+                <text
+                  x="65"
+                  y="30"
+                  text-anchor="middle"
+                  font-family="'Courier Prime',monospace"
+                  font-weight="700"
+                  font-size="12"
+                  fill="#E8467C"
+                >
+                  Rp12K
+                </text>
+                <text
+                  x="65"
+                  y="49"
+                  text-anchor="middle"
+                  font-family="'Bagel Fat One',system-ui,sans-serif"
+                  font-size="16"
+                  fill="#2B1D20"
+                >
+                  LE CHEESE
+                </text>
+                <ellipse
+                  cx="66"
+                  cy="116"
+                  rx="42"
+                  ry="7"
+                  fill="#fff"
+                  opacity=".75"
+                />
+                <path d="M26 82 L96 66 L104 108 L32 117Z" fill="#F7E2B0" />
+                <path
+                  d="M96 66 C101 67 104 70 105 75 L111 107 C109 112 106 112 104 108Z"
+                  fill="#7A4424"
+                />
+                <path
+                  d="M26 82 L96 66 C100 63 105 66 106 70 C104 74 99 76 92 77 L32 88 C28 88 25 86 26 82Z"
+                  fill="#4A2A1A"
+                />
+                <path
+                  d="M40 82 C54 79 70 76 84 73"
+                  stroke="#8A5530"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  fill="none"
+                  opacity=".75"
+                />
+                <circle cx="52" cy="100" r="2.4" fill="#ECCF8F" />
+                <circle cx="76" cy="94" r="2" fill="#ECCF8F" />
+                <circle cx="88" cy="104" r="2.4" fill="#ECCF8F" />
+              </g>
+            </g>
+            <!-- postmark -->
+            <g
+              transform="translate(232 92)"
+              fill="none"
+              stroke="#E8467C"
+              stroke-opacity=".8"
+            >
+              <circle r="46" stroke-width="3" />
+              <circle r="31" stroke-width="2" />
+              <text
+                font-family="'Courier Prime',monospace"
+                font-weight="700"
+                font-size="10.5"
+                letter-spacing="1.5"
+                fill="#E8467C"
+                fill-opacity=".85"
+                stroke="none"
+              >
+                <textPath href="#pm-ring">LE CHEESE • JEMBER • 2026 •</textPath>
+              </text>
+              <text
+                y="5"
+                text-anchor="middle"
+                font-family="'Bagel Fat One',system-ui,sans-serif"
+                font-size="15"
+                fill="#E8467C"
+                fill-opacity=".85"
+                stroke="none"
+              >
+                PESAN!
+              </text>
+              <path
+                d="M50 -14 q10 -8 20 0 t20 0 t20 0 t20 0 M50 0 q10 -8 20 0 t20 0 t20 0 t20 0 M50 14 q10 -8 20 0 t20 0 t20 0 t20 0"
+                stroke-width="3"
+                stroke-linecap="round"
+              />
+            </g>
+          </svg>
+        </div>
+      </section>
+    </main>
+
+    <footer>© 2026 Le Cheese. All rights reserved.</footer>
+
+    <a
+      class="cart-fab away"
+      id="cart-fab"
+      href="#order-h"
+      aria-label="Lihat pesanan"
+    >
+      <span class="count" id="fab-count">0</span>
+      <span class="lbl">Lihat pesanan</span>
+      <strong id="fab-total">Rp. 0</strong>
+    </a>
+
+    <script src="js/main.js" defer></script>
+  </body>
+</html>

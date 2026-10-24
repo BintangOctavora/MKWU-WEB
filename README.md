@@ -15,7 +15,7 @@ lecheese/
     ├── logo.png            ← logo navbar & avatar chat
     ├── megafon.webp        ← banner Paket Bestie
     ├── foto-hero.jpg       ← foto polaroid di Beranda
-    ├── qris.jpg            ← (TAMBAHKAN) gambar QRIS Le Cheese
+    ├── qris.png            ← (TAMBAHKAN) gambar QRIS Le Cheese
     └── menu/               ← foto tiap menu
         ├── bite-original.jpg
         ├── bite-chocolate.jpg
@@ -42,19 +42,19 @@ lecheese/
 Di baris paling atas `js/main.js`:
 
 ```js
-const BUKA_ORDER = true;  // false = muncul "Kuota Batch Ini Penuh!" dan form + tombol menu dikunci
+const BUKA_ORDER = true; // false = muncul "Kuota Batch Ini Penuh!" dan form + tombol menu dikunci
 ```
 
 ## Menyambungkan ke Google Spreadsheet
 
-Script sudah disesuaikan dengan spreadsheet **REKAP_BATCH_1** (sheet *Gabungan* + *Detail Item*).
+Script sudah disesuaikan dengan spreadsheet **REKAP_BATCH_1** (sheet _Gabungan_ + _Detail Item_).
 
 1. Buka spreadsheet **REKAP_BATCH_1**.
 2. Menu **Ekstensi → Apps Script**. Hapus isi editor, lalu tempel seluruh isi `apps-script/Code.gs`. Simpan.
    Pilih fungsi `tesIzin` → **Jalankan** → izinkan akses (Sheet + Drive).
 3. Klik **Terapkan → Deployment baru** → pilih jenis **Aplikasi web**:
-   - *Jalankan sebagai*: **Saya**
-   - *Yang memiliki akses*: **Siapa saja**
+   - _Jalankan sebagai_: **Saya**
+   - _Yang memiliki akses_: **Siapa saja**
 4. Klik **Terapkan**, izinkan aksesnya, lalu salin **URL aplikasi web** (berakhiran `/exec`).
 5. Tempel URL itu ke `js/main.js`:
 
@@ -85,7 +85,7 @@ Selama `SCRIPT_URL` masih kosong, pesanan tetap bisa dikirim — hanya lewat Wha
 
 - **Harga, topping, nomor WhatsApp, Paket Bestie** → bagian atas `js/main.js`
   (`WA_NUMBER`, `BUNDLES`, `TOPPINGS`, `PRODUCTS`).
-- **Gambar QRIS** → simpan sebagai `img/qris.jpg`. Selama file belum ada, kotak QRIS menampilkan placeholder.
+- **Gambar QRIS** → simpan sebagai `img/qris.png`. Selama file belum ada, kotak QRIS menampilkan placeholder.
 - **Warna & font** → blok `:root` di awal `css/style.css`.
 
 ## Menjalankan

@@ -1,4 +1,15 @@
 /* Le Cheese — order logic & interactions */
+/* =========================================================
+   SAKLAR BUKA / TUTUP ORDER
+   true  = web menerima pesanan seperti biasa
+   false = muncul pesan "Kuota Batch Penuh" & form dikunci
+   ========================================================= */
+const BUKA_ORDER = true;
+
+/* URL Web App Google Apps Script (lihat apps-script/Code.gs & README).
+   Kosongkan ("") kalau belum dipasang: pesanan tetap dikirim lewat WhatsApp. */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxT0J0hjkMnoKGcbwv25BNf4J5Rb5HMV3f5jEKsZKUDs6HV66GxTJY45ybzC2tztW6jUg/exec";
+
 /* ===== Data — edit prices / toppings here ===== */
 const WA_NUMBER = "6285843745652"; // 085843745652 in international format
 /* Paket Bestie: mix any flavor & topping within the same line */
@@ -197,6 +208,10 @@ PRODUCTS.forEach((p) => {
       card.classList.add("bump");
     }),
   );
+  card.addEventListener("reset-card", () => {
+    hint.textContent = "";
+    render();
+  });
   render();
 });
 
@@ -221,6 +236,7 @@ function cart() {
           subtotal: qty * p.price,
           qty,
           p,
+          topping: t,
         });
       });
   });
@@ -241,7 +257,11 @@ function cart() {
 const listEl = document.getElementById("order-list");
 const emptyEl = document.getElementById("order-empty");
 const totalEl = document.getElementById("order-total");
+const formEl = document.getElementById("order-form");
 const nameEl = document.getElementById("nama");
+const telEl = document.getElementById("telepon");
+const buktiEl = document.getElementById("bukti");
+const dropzone = document.getElementById("dropzone");
 const msgEl = document.getElementById("form-msg");
 const waBtn = document.getElementById("wa-btn");
 const fab = document.getElementById("cart-fab");
@@ -316,59 +336,238 @@ function update() {
   document.getElementById("fab-total").textContent = rupiah(c.total);
   hasItems = count > 0;
   syncFab();
-  syncWa(c);
+  syncPreview();
 }
 
-/* WhatsApp button is only active when the cart has items AND a name is filled in. */
-function syncWa(c = cart()) {
-  const hasName = nameEl.value.trim().length > 0;
-  document.getElementById("bubble-name").textContent =
-    nameEl.value.trim() || "-";
-  const ok = hasName && c.lines.length > 0;
-  if (ok) {
-    waBtn.href = waLink(c);
-    waBtn.removeAttribute("aria-disabled");
-    waBtn.removeAttribute("tabindex");
+/* ===== Phone preview mirrors the form ===== */
+function syncPreview() {
+  const v = (el) => el.value.trim() || "-";
+  document.getElementById("bubble-name").textContent = v(nameEl);
+  document.getElementById("bubble-wa").textContent = v(telEl);
+  document.getElementById("bubble-bukti").textContent = bukti.base64
+    ? "sudah diupload ✓"
+    : "belum diupload";
+}
+[nameEl, telEl].forEach((el) =>
+  el.addEventListener("input", () => {
+    el.classList.remove("invalid");
     msgEl.textContent = "";
-  } else {
-    waBtn.removeAttribute("href");
-    waBtn.setAttribute("aria-disabled", "true");
-    msgEl.textContent = !c.lines.length
-      ? "Tambahkan minimal 1 cheesecake untuk mengaktifkan tombol."
-      : "Isi Nama Lengkap dulu untuk mengaktifkan tombol.";
-  }
-}
+    syncPreview();
+  }),
+);
 
-function waLink(c) {
-  const nama = nameEl.value.trim();
-  const rows = c.lines.map((l) => `- ${l.text}: ${rupiah(l.subtotal)}`);
-  c.deals
-    .filter((d) => d.saving > 0)
-    .forEach((d) => rows.push(`- ${d.name} ×${d.count}: −${rupiah(d.saving)}`));
-  const text = [
-    "Halo Le Cheese, saya mau pesan:",
-    ...rows,
-    "",
-    `Total: ${rupiah(c.total)}`,
-    `Nama: ${nama || "-"}`,
-  ].join("\n");
-  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+/* ===== Upload bukti QRIS: compressed in the browser (canvas → JPEG) ===== */
+let bukti = { base64: "", mimeType: "", fileName: "" };
+function kompresGambar(file, maxWidth = 900, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let w = img.width,
+          h = img.height;
+        if (w > maxWidth) {
+          h = Math.round((h * maxWidth) / w);
+          w = maxWidth;
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        resolve({
+          dataUrl,
+          base64: dataUrl.split(",")[1],
+          mimeType: "image/jpeg",
+          fileName: file.name.replace(/\.[^/.]+$/, "") + ".jpg",
+        });
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
-
-nameEl.addEventListener("input", () => syncWa());
-document
-  .getElementById("order-form")
-  .addEventListener("submit", (e) => e.preventDefault());
-waBtn.addEventListener("click", (e) => {
-  if (waBtn.getAttribute("aria-disabled") === "true") {
-    e.preventDefault();
-    if (!nameEl.value.trim()) nameEl.focus();
+const dzEmpty = document.getElementById("dz-empty");
+const dzPreview = document.getElementById("dz-preview");
+const buktiPreview = document.getElementById("bukti-preview");
+const buktiName = document.getElementById("bukti-name");
+function resetBukti() {
+  bukti = { base64: "", mimeType: "", fileName: "" };
+  buktiEl.value = "";
+  buktiPreview.removeAttribute("src");
+  buktiName.textContent = "";
+  dzPreview.hidden = true;
+  dzEmpty.hidden = false;
+  dropzone.classList.remove("has-file", "invalid");
+}
+buktiEl.addEventListener("change", async () => {
+  const file = buktiEl.files && buktiEl.files[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    msgEl.textContent = "File bukti harus berupa gambar (JPG/PNG/screenshot).";
+    resetBukti();
     return;
   }
-  waBtn.href = waLink(cart());
-  msgEl.textContent =
-    "Membuka WhatsApp… Kalau tidak terbuka, chat manual ke 085843745652.";
+  dzEmpty.hidden = true;
+  dzPreview.hidden = false;
+  buktiName.textContent = "Memproses gambar...";
+  try {
+    const hasil = await kompresGambar(file);
+    bukti = {
+      base64: hasil.base64,
+      mimeType: hasil.mimeType,
+      fileName: hasil.fileName,
+    };
+    buktiPreview.src = hasil.dataUrl;
+    buktiName.textContent = `✓ ${file.name}`;
+    dropzone.classList.add("has-file");
+    dropzone.classList.remove("invalid");
+    msgEl.textContent = "";
+  } catch (err) {
+    console.error("Gagal memproses gambar:", err);
+    msgEl.textContent = "Gagal memuat gambar, silakan pilih gambar lain.";
+    resetBukti();
+  }
+  syncPreview();
 });
+
+/* ===== Submit: validate → save to Google Sheet (Apps Script) → open WhatsApp ===== */
+function invalid(el, text) {
+  msgEl.textContent = text;
+  el.classList.add("invalid");
+  if (el.focus) el.focus({ preventScroll: true });
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  return false;
+}
+function validasi(c) {
+  [nameEl, telEl, dropzone].forEach((el) =>
+    el.classList.remove("invalid"),
+  );
+  if (!c.lines.length) {
+    msgEl.textContent = "Tambahkan minimal 1 cheesecake dulu ya.";
+    document.getElementById("menu").scrollIntoView({ behavior: "smooth" });
+    return false;
+  }
+  if (!nameEl.value.trim()) return invalid(nameEl, "Isi Nama Lengkap dulu.");
+  const tel = telEl.value.replace(/[^0-9+]/g, "");
+  if (!/^(\+?62|0)8[0-9]{7,12}$/.test(tel))
+    return invalid(telEl, "Nomor WhatsApp belum valid (contoh: 08123456789).");
+  if (!bukti.base64)
+    return invalid(dropzone, "Upload foto bukti pembayaran QRIS dulu.");
+  return true;
+}
+
+function pesanWA(c, data) {
+  const rows = c.lines.map((l) => `• ${l.text}: ${rupiah(l.subtotal)}`);
+  c.deals
+    .filter((d) => d.saving > 0)
+    .forEach((d) => rows.push(`• ${d.name} ×${d.count}: −${rupiah(d.saving)}`));
+  return [
+    "Halo Admin Le Cheese, saya ingin memesan:",
+    "",
+    `- *ID Pesanan:* ${data.id}`,
+    `- *Nama:* ${data.nama}`,
+    `- *No. WhatsApp:* ${data.telepon}`,
+    "- *Pesanan:*",
+    ...rows,
+    `- *Jumlah:* ${data.jumlah} pcs`,
+    `- *Total Bayar (QRIS):* ${rupiah(c.total)}`,
+    "- *Status Bukti QRIS:* Sudah diupload di Form Web",
+    "",
+    "Mohon info konfirmasi pesanan saya, terima kasih!",
+  ].join("\n");
+}
+
+/* ID pesanan format spreadsheet: ORD- + 5 huruf/angka (mis. ORD-U4RTZ) */
+function buatIdPesanan() {
+  const c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let s = "ORD-";
+  for (let i = 0; i < 5; i++) s += c[Math.floor(Math.random() * c.length)];
+  return s;
+}
+
+function resetPesanan() {
+  PRODUCTS.forEach((p) => {
+    state[p.id].sel = "";
+    state[p.id].counts = {};
+  });
+  document.querySelectorAll(".card").forEach((card) => card.dispatchEvent(new Event("reset-card")));
+  formEl.reset();
+  resetBukti();
+  update();
+}
+
+formEl.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (!BUKA_ORDER) return;
+  const c = cart();
+  if (!validasi(c)) return;
+
+  const data = {
+    nama: nameEl.value.trim(),
+    telepon: telEl.value.trim(),
+    jumlah: c.lines.reduce((a, l) => a + l.qty, 0),
+  };
+  data.id = buatIdPesanan();
+  // Format sama dengan spreadsheet REKAP_BATCH_1 (sheet Gabungan + Detail Item)
+  const payload = {
+    id: data.id,
+    nama: data.nama,
+    telepon: data.telepon,
+    bite: c.lines.filter((l) => l.p.line === "bite").reduce((a, l) => a + l.qty, 0),
+    classic: c.lines.filter((l) => l.p.line === "classic").reduce((a, l) => a + l.qty, 0),
+    total: c.total,
+    metode: "QRIS",
+    items: c.lines.map((l) => ({
+      produk: l.p.line === "bite" ? "Bite" : "Classic",
+      rasa: FLAVORS[l.p.flavor].name,
+      topping: l.topping,
+      qty: l.qty,
+    })),
+    buktiBase64: bukti.base64,
+    buktiMime: bukti.mimeType,
+  };
+  const url = `https://api.whatsapp.com/send?phone=${WA_NUMBER}&text=${encodeURIComponent(pesanWA(c, data))}`;
+
+  // 1. Simpan ke Google Spreadsheet di latar belakang
+  if (SCRIPT_URL) {
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+    }).catch((err) => console.error("Gagal mengirim ke Spreadsheet:", err));
+  }
+  // 2. Buka WhatsApp admin dengan pesan yang sudah terisi
+  const win = window.open(url, "_blank");
+  if (!win) location.href = url;
+  // 3. Bersihkan form & keranjang
+  resetPesanan();
+  msgEl.textContent =
+    "Pesanan terkirim! Lanjutkan konfirmasi di WhatsApp. Kalau WhatsApp tidak terbuka, chat manual ke 085843745652.";
+});
+
+/* ===== Batch closed: lock everything ===== */
+function aturStatusBatch() {
+  if (BUKA_ORDER) return;
+  document.querySelector(".order").classList.add("closed");
+  document.getElementById("batch-closed").hidden = false;
+  formEl
+    .querySelectorAll("input, select, textarea, button")
+    .forEach((el) => (el.disabled = true));
+  document.querySelectorAll(".card").forEach((card) => {
+    card.classList.add("locked");
+    card.querySelectorAll("button, select").forEach((el) => (el.disabled = true));
+  });
+  document.querySelector(".order-note").textContent =
+    "Pemesanan batch ini sudah ditutup.";
+}
+aturStatusBatch();
 
 /* ===== Copy phone ===== */
 document.querySelectorAll("[data-copy]").forEach((b) =>
